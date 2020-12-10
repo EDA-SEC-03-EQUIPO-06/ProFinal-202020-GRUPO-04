@@ -26,11 +26,13 @@
 import config
 from DISClib.ADT.graph import gr
 from DISClib.ADT import map as m
+from DISClib.ADT import orderedmap as om
 from DISClib.ADT import list as lt
 from DISClib.DataStructures import listiterator as it
 from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.Utils import error as error
+from DISClib.ADT import graph as gr
 assert config
 
 """
@@ -42,7 +44,31 @@ de creacion y consulta sobre las estructuras de datos.
 #                       API
 # -----------------------------------------------------
 
+def newAnalyzer():
+    analyzer = {"CompanyServices":None, 
+                "CompanyTaxis":None,
+                "DatesTree": None
+                "graph": None}
+    
+    analyzer["CompanyServices"] = m.newMap(comparefunction=)
+    analyzer["CompanyTaxis"] = m.newMap(comparefunction=)
+    analyzer["DatesTree"] = om.newMap(omaptype= "RBT",
+                                      comparefunction=)
+    analyzer["graph"] = gr.newGraph(datastructure= "ADJ_LIST",
+                                    directed = True,
+                                    comparefunction=)
+    return analyzer
+    
+# ==============================
 # Funciones para agregar informacion al grafo
+# ==============================
+
+def addLine(tripfile, analyzer):
+    company = tripfile[""]
+
+            
+
+
 
 # ==============================
 # Funciones de consulta
