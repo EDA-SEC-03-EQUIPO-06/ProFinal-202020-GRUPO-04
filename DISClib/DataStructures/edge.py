@@ -32,16 +32,21 @@ Este código está basado en las implementaciones propuestas en:
 """
 
 
-def newEdge(va, vb, weight=0):
+def newEdge2(va, vb, weight=0):
     """
     Crea un nuevo arco entrelos vertices va y vb
     """
     edge = {'vertexA': va,
             'vertexB': vb,
-            'weight': weight
+            'weight': weight,
             }
     return edge
 
+def newEdge(va,vb):
+    edge = {"vertexA": va,
+            "vertexB": vb,
+            "weight":  {}}
+    return edge
 
 def weight(edge):
     """
@@ -75,3 +80,16 @@ def compareedges(edge1, edge2):
         if other(edge1, e1v) == other(edge2, e2v):
             return True
     return False
+
+def updateAverageWeight(graph, edge, newweight,time):
+    """
+    Actualiza el peso del arco entre los vertices usando el promedio entre los pesos
+    """
+    if time not in edge["weight"]:
+        edge["weight"][time] = {"weight": int(newweight),
+                                "count": 1,
+                                "sum": int(newweight)}
+    else:
+        edge["weight"][time]["count"]+= 1
+        edge["weight"][time]["sum"] += int(newweight)
+        edge["weight"][time]["weight"] = edge["weight"][time]["sum"]/edge["weight"][time]["count"]

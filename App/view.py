@@ -51,3 +51,16 @@ operación seleccionada.
 """
 Menu principal
 """
+while True:
+    #printMenu()
+    inputs = input('Seleccione una opción para continuar\n>')
+
+    if int(inputs[0]) == 1:
+        print("\nInicializando....")
+        # cont es el controlador que se usará de acá en adelante
+        cont = controller.init()
+    elif int(inputs[0]) == 2:
+        controller.loadFiles(cont)
+    else:
+        sys.exit(0)
+sys.exit(0)
