@@ -92,11 +92,11 @@ def addCA(analyzer, CommunityArea):
     
     
 def addConnection(analyzer, CA1, CA2, startTime, TripDuration):
-    edge = gr.getEdge(analyzer["graph"], CA1, CA2)
+    edge = gr.getEdge(analyzer["graph"], CA1, CA2, startTime)
     if edge is None:
-        gr.addEdge(analyzer["graph"], CA1,CA2,TripDuration)
-        edge = gr.getEdge(analyzer["graph"], CA1, CA2)
-    e.updateAverageWeight(analyzer["graph"],edge,startTime)
+        gr.addEdge(analyzer["graph"], CA1,CA2,TripDuration, startTime)
+    else:
+        e.updateAverageWeight(analyzer["graph"],edge,TripDuration)
     return analyzer
 
 # ==============================
@@ -107,18 +107,18 @@ def getBestSchedule(graph, pickUp, dropOff, InitialTime, EndTime):
     bestSchedule = InitialTime
     currentStamp = InitialTime
     bestTime = getTime(graph,pickUp,dropOff,currentStamp)
+    print(bestTime)
     while currentStamp != EndTime:
         currentStamp = add15(currentStamp)
         time = getTime(graph, pickUp, dropOff, currentStamp)
         if time < bestTime:
             bestSchedule = currentStamp
             bestTime = time
+        print(time)
     return bestSchedule
-        
-    
     
 def getTime(graph, pickUp, dropOff, currentStamp):
-    ST = djk.Dijkstra(graph, pickUp)
+    ST = djk.Dijkstra(graph, pickUp, currentStamp)
     time = djk.distTo(ST, dropOff)
     return time
     

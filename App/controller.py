@@ -71,3 +71,9 @@ def loadFile(analyzer, infofile):
 # ___________________________________________________
 #  Funciones para consultas
 # ___________________________________________________
+def getBestSchedule(analyzer, pickUp, dropOff, InitialTime, EndTime):
+    InitialTime = "1111-11-11T" + InitialTime +":00.000"
+    InitialTime = model.getTimeTaxiTrip(InitialTime)
+    EndTime = "1111-11-11T" + EndTime +":00.000"
+    EndTime = model.getTimeTaxiTrip(EndTime)
+    return model.getBestSchedule(analyzer["graph"],pickUp,dropOff,InitialTime,EndTime)

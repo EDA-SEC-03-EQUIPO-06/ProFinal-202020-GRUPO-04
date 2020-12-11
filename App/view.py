@@ -61,6 +61,8 @@ while True:
         cont = controller.init()
     elif int(inputs[0]) == 2:
         controller.loadFiles(cont)
+    elif int(inputs[0]) == 3:
+        print(controller.getBestSchedule(cont,"41.0","5.0","11:30","12:30"))
     else:
         sys.exit(0)
 sys.exit(0)
