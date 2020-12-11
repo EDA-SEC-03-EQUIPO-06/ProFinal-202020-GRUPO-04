@@ -76,9 +76,11 @@ def updateGraph(analyzer, file):
     dropOffCA = file["dropoff_community_area"]
     TripDuration = file["trip_seconds"]
     StartTime = getTimeTaxiTrip(file["trip_start_timestamp"])
-    addCA(analyzer, pickUpCA)
-    addCA(analyzer, dropOffCA)
-    if pickUpCA != dropOffCA and TripDuration != "":    
+    if pickUpCA != "":
+        addCA(analyzer, pickUpCA)
+    if dropOffCA != "":
+        addCA(analyzer, dropOffCA)
+    if pickUpCA != dropOffCA and TripDuration != "" and pickUpCA != "" and dropOffCA != "":    
         addConnection(analyzer,pickUpCA,dropOffCA,StartTime,TripDuration)
     
     
@@ -92,15 +94,34 @@ def addCA(analyzer, CommunityArea):
 def addConnection(analyzer, CA1, CA2, startTime, TripDuration):
     edge = gr.getEdge(analyzer["graph"], CA1, CA2)
     if edge is None:
-        gr.addEdge(analyzer["graph"], CA1,CA2)
+        gr.addEdge(analyzer["graph"], CA1,CA2,TripDuration)
         edge = gr.getEdge(analyzer["graph"], CA1, CA2)
-    e.updateAverageWeight(analyzer["graph"],edge,TripDuration,startTime)
+    e.updateAverageWeight(analyzer["graph"],edge,startTime)
     return analyzer
 
 # ==============================
 # Funciones de consulta
 # ==============================
 
+def getBestSchedule(graph, pickUp, dropOff, InitialTime, EndTime):
+    bestSchedule = InitialTime
+    currentStamp = InitialTime
+    bestTime = getTime(graph,pickUp,dropOff,currentStamp)
+    while currentStamp != EndTime:
+        currentStamp = add15(currentStamp)
+        time = getTime(graph, pickUp, dropOff, currentStamp)
+        if time < bestTime:
+            bestSchedule = currentStamp
+            bestTime = time
+    return bestSchedule
+        
+    
+    
+def getTime(graph, pickUp, dropOff, currentStamp):
+    ST = djk.Dijkstra(graph, pickUp)
+    time = djk.distTo(ST, dropOff)
+    return time
+    
 # ==============================
 # Funciones Helper
 # ==============================
@@ -122,6 +143,12 @@ def organizeData(information, origin):
 def getTimeTaxiTrip(timestamp):
     taxitripdatetime = datetime.datetime.strptime(timestamp, '%Y-%m-%dT%H:%M:%S.%f')
     return taxitripdatetime.time()
+    
+def add15(timestamp):
+    timestamp = timestamp.strftime("%Y-%m-%dT%H:%M:%S")
+    timestamp =datetime.datetime.strptime(timestamp, '%Y-%m-%dT%H:%M:%S')
+    fifteen = timestamp + datetime.timedelta(minutes=15)
+    return fifteen.time()
 # ==============================
 # Funciones de Comparacion
 # ==============================
