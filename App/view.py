@@ -44,7 +44,6 @@ operación seleccionada.
 #  Variables
 # ___________________________________________________
 
-file = "201801-1-citibike-tripdata.csv"
 initialStation = None
 recursionLimit = 20000
 

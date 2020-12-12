@@ -56,7 +56,6 @@ def newAnalyzer():
     analyzer["CompanyServices"] = m.newMap(comparefunction=compareIds)
     analyzer["CompanyTaxis"] = m.newMap(comparefunction=compareIds)
 
-    analyzer['Services'] = lt.newList('ARRAY_LIST', compareIds)
     analyzer["DateIndex"] = om.newMap(omaptype= "RBT",
                                       comparefunction=compareDates)
     analyzer["graph"] = gr.newGraph(datastructure= "ADJ_LIST",
@@ -69,8 +68,6 @@ def newAnalyzer():
 # ==============================
 
 def addLine(analyzer, line):
-    #company = tripfile[""]
-    lt.addLast(analyzer["Services"],line)
     updateDateIndex(analyzer['DateIndex'], line)
     return analyzer       
 
