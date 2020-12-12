@@ -26,6 +26,7 @@
 import config
 from DISClib.ADT.graph import gr
 from DISClib.ADT import map as m
+from DISClib.ADT import minpq as pq
 from DISClib.ADT import orderedmap as om
 from DISClib.ADT import list as lt
 from DISClib.DataStructures import listiterator as it
@@ -33,6 +34,7 @@ from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.Utils import error as error
 from DISClib.ADT import graph as gr
+from DISClib.DataStructures import mapentry as me
 assert config
 
 """
@@ -45,39 +47,129 @@ de creacion y consulta sobre las estructuras de datos.
 # -----------------------------------------------------
 
 def newAnalyzer():
-    analyzer = {"CompanyServices":None, 
-                "CompanyTaxis":None,
-                "DatesTree": None
+    analyzer = {"Company": None,
+                "Total_Taxis": [],
+                "Total_Companys" 
+                "DatesTree": None,
                 "graph": None}
     
-    analyzer["CompanyServices"] = m.newMap(comparefunction=)
-    analyzer["CompanyTaxis"] = m.newMap(comparefunction=)
+    analyzer["Company"] = m.newMap(comparefunction=compareMap)
+    analyzer["Total_Companys"] = 0
     analyzer["DatesTree"] = om.newMap(omaptype= "RBT",
-                                      comparefunction=)
+                                      comparefunction=compareMap)
     analyzer["graph"] = gr.newGraph(datastructure= "ADJ_LIST",
                                     directed = True,
-                                    comparefunction=)
+                                    comparefunction=compareMap)
     return analyzer
     
 # ==============================
 # Funciones para agregar informacion al grafo
 # ==============================
 
-def addLine(tripfile, analyzer):
-    company = tripfile[""]
-
-            
+def addLine(analyzer, tripfile):
+    addCompanyService(analyzer, tripfile)
 
 
+def addCompanyService(analyzer, tripfile):
+    mapa = analyzer["Company"]
+    Compañia = tripfile["company"]
+    taxiID = tripfile["taxi_id"]
+    lsttaxis = analyzer["Total_Taxis"]
+    
+    if Compañia == None: 
+        Compañia = "Independent Owner"
+    
+    existcompany = m.contains(mapa, Compañia)
+
+    if existcompany:
+        consulta = m.get(mapa, Compañia)['value']
+        consulta["Services"] += 1
+        if taxiID not in consulta["Taxis"]:
+            consulta["Taxis"].append(taxiID)
+            consulta["numTaxis"] +=1
+        
+        
+    else:
+        analyzer["Total_Companys"] += 1
+        DictCompany = newCompany()
+        m.put(mapa, Compañia, DictCompany)
+        m.get(mapa, Compañia)['value'["Services"] += 1
+
+    if taxiID not in lsttaxis:
+            lsttaxis.append(taxiID)
+
+        
+
+    
 
 # ==============================
 # Funciones de consulta
 # ==============================
+def Total(analyzer):
+    print(analyzer)
+    return {"Total_Taxis: ": (len(analyzer["Total_Taxis"])), "Total_Companys: ": analyzer["Total_Companys"] }
+
+def PQmaker(analyzer): 
+    
+    TopServices =  pq.newMinPQ(cmpfunction= comparefunction)
+    TopTaxis = pq.newMinPQ(cmpfunction= comparefunction)
+    lstcompany = m.keySet(analyzer["Company"])
+    iterator = it.newIterator(lstcompany)
+
+    while it.hasNext(iterator):
+        element = it.next(iterator)
+        consulta = m.get(analyzer["Company"], element)['value']
+        
+        numtaxis = len(consulta["Taxis"])
+        numservices = (consulta["Services"])
+        print(numtaxis, numservices, element)
+
+        taxisentry = {"key": numtaxis, "company": element}
+        servicesentry = {"key": numservices, "company": element}
+        
+        pq.insert(TopTaxis, taxisentry)
+        pq.insert(TopServices, servicesentry)
+
+    return {"T_taxis": TopTaxis, "T_services": TopServices}
+
+
+
 
 # ==============================
 # Funciones Helper
 # ==============================
+def newCompany():
+    r = {"Taxis": [],"numTaxis":0, "Services": 0}
+    return r
+
+def getTopN(Pq, n):
+    Taxis = {}
+    Services = {}
+    
+    for i in range(1, n+1):
+        Taxis[i] = pq.delMin(Pq["T_taxis"])
+        Services[i] = pq.delMin(Pq["T_services"])
+    
+    return (Taxis, Services) 
 
 # ==============================
 # Funciones de Comparacion
 # ==============================
+def compareMap(keyname,company):
+    companyentry = me.getKey(company)
+    if keyname==companyentry:
+        return 0
+    elif keyname > companyentry:
+        return 1
+    else:
+        return -1
+
+def comparefunction(value1,value2):
+    value1 = value1["key"]
+    value2 = value2["key"]
+    if value1 == value2:
+        return 0
+    elif value1 < value2:
+        return 1
+    else:
+        return -1

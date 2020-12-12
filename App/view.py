@@ -48,6 +48,59 @@ operación seleccionada.
 #  Menu principal
 # ___________________________________________________
 
+def printMenu():
+    print("\n0- Inicializar Catálogo")
+    print("1- Cargar Archivos")
+    print("2- Descubrir productoras de cine")
+    print("3- Conocer a un director")
+    print("4- Conocer a un actor")
+    print("5- Entender un género cinematográfico")
+    print("6- Encontrar películas por país")
+    print("7- Salir")
+
+
+
+
+def optionTwo():
+    print("\nCargando información ....")
+    controller.loadFiles(cont)
+
+
+
+def optionThree():
+    """
+    Requerimento 1
+    """
+    r= (controller.universal(cont, n))
+    print("\nLos resultados encrontados son: \n")
+    print(r[0])
+    print("\n El top compañias por numero de taxis es: \n")
+    print(r[1][0])
+    print("\n El top compañias por numero de servicios es: \n")
+    print(r[1][1])
 """
 Menu principal
 """
+
+while True:
+    printMenu()
+    inputs = input('Seleccione una opción para continuar\n>')
+
+    if int(inputs[0]) == 1:
+        print("\nInicializando....")
+        # cont es el controlador que se usará de acá en adelante
+        cont = controller.init()
+
+    elif int(inputs[0]) == 2:
+        executiontime = timeit.timeit(optionTwo, number=1)
+        print("\nTiempo de ejecución: " + str(executiontime))
+
+    elif int(inputs[0]) == 3:
+        n = int(input("Escriba el numero de compañias incluidas en el Ranking: "))
+        executiontime = timeit.timeit(optionThree, number=1)
+        print("\nTiempo de ejecución: " + str(executiontime))
+
+
+
+    else:
+        sys.exit(0)

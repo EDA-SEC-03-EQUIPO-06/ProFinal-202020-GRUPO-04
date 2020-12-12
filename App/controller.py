@@ -27,6 +27,7 @@
 import config as cf
 from App import model
 import csv
+import os
 
 """
 El controlador se encarga de mediar entre la vista y el modelo.
@@ -64,9 +65,17 @@ def loadFile(analyzer, infofile):
     infofile = cf.data_dir + infofile
     input_file = csv.DictReader(open(infofile, encoding= "utf-8"),
                                 delimiter = ",")
+    i=0
     for line in input_file:
+        i+=1
         model.addLine(analyzer, line)
+        if i ==100:
+            break
     return analyzer
 # ___________________________________________________
 #  Funciones para consultas
 # ___________________________________________________
+def universal(analyzer, n):
+    Total = model.Total(analyzer)
+    Pq = model.PQmaker(analyzer)
+    return( Total, model.getTopN(Pq, n))
