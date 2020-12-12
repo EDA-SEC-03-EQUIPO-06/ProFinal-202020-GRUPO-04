@@ -34,6 +34,7 @@ from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.Utils import error as error
 from DISClib.ADT import graph as gr
+from DISClib.ADT import stack as st
 import datetime
 assert config
 
@@ -77,11 +78,11 @@ def updateGraph(analyzer, file):
     TripDuration = file["trip_seconds"]
     StartTime = getTimeTaxiTrip(file["trip_start_timestamp"])
     if pickUpCA != "":
-        addCA(analyzer, pickUpCA)
+        addCA(analyzer, str(int(float(pickUpCA))))
     if dropOffCA != "":
-        addCA(analyzer, dropOffCA)
-    if pickUpCA != dropOffCA and TripDuration != "" and pickUpCA != "" and dropOffCA != "":    
-        addConnection(analyzer,pickUpCA,dropOffCA,StartTime,TripDuration)
+        addCA(analyzer, str(int(float(dropOffCA))))
+    if pickUpCA != dropOffCA and TripDuration != "" and pickUpCA != "" and dropOffCA != "" and int(float(TripDuration))>0:    
+        addConnection(analyzer,str(int(float(pickUpCA))),str(int(float(dropOffCA))),StartTime,TripDuration)
     
     
     
@@ -106,21 +107,34 @@ def addConnection(analyzer, CA1, CA2, startTime, TripDuration):
 def getBestSchedule(graph, pickUp, dropOff, InitialTime, EndTime):
     bestSchedule = InitialTime
     currentStamp = InitialTime
-    bestTime = getTime(graph,pickUp,dropOff,currentStamp)
-    print(bestTime)
+    first = getTime(graph,pickUp,dropOff,currentStamp)
+    bestTime = first[0]
+    search = first[1]
     while currentStamp != EndTime:
         currentStamp = add15(currentStamp)
         time = getTime(graph, pickUp, dropOff, currentStamp)
-        if time < bestTime:
+        if time[0] < bestTime:
             bestSchedule = currentStamp
-            bestTime = time
-        print(time)
-    return bestSchedule
+            bestTime = time[0]
+            search = time[1]
+    path = []
+    pathTo = djk.pathTo(search, dropOff)
+    if pathTo is None:
+        path = None
+    else:
+        while not st.isEmpty(pathTo):
+            edge = st.pop(pathTo)
+            Com = edge["vertexA"]
+            path.append(Com)
+            if st.size(pathTo) == 0:
+                Com2 = edge["vertexB"]
+                path.append(Com2)
+    return bestSchedule,path,bestTime
     
 def getTime(graph, pickUp, dropOff, currentStamp):
     ST = djk.Dijkstra(graph, pickUp, currentStamp)
     time = djk.distTo(ST, dropOff)
-    return time
+    return time,ST
     
 # ==============================
 # Funciones Helper

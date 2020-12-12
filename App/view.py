@@ -62,7 +62,16 @@ while True:
     elif int(inputs[0]) == 2:
         controller.loadFiles(cont)
     elif int(inputs[0]) == 3:
-        print(controller.getBestSchedule(cont,"41.0","5.0","11:30","12:30"))
+        pickUp = input("Ingrese la Community Area de la que quiere salir: ")
+        dropOff = input("Ingrese la Community Area a la que quiere llegar: ")
+        InitialTime = input("Ingrese el rango inferior de su horario disponible: ")
+        EndTime = input("Ingrese el rango superior de su horario disponible: ")
+        info = controller.getBestSchedule(cont,pickUp,dropOff,InitialTime,EndTime)
+        if info[1] is not None:
+            print("\n El mejor horario para tomar el viaje es {}, el cual te tomará aproximadamente {} segundos".format(info[0],int(info[2])))
+            print("La mejor ruta para tomar es {}\n".format("-".join(info[1])))
+        else:
+            print("Lo sentimos, no hay una ruta disponible en ninguno de los horarios seleccionados")
     else:
         sys.exit(0)
 sys.exit(0)
