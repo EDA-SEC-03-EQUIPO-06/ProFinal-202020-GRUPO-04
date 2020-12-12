@@ -29,6 +29,7 @@ import sys
 import config
 from App import controller
 from DISClib.ADT import stack
+from DISClib.ADT import minpq as pq
 import timeit
 assert config
 
@@ -69,13 +70,21 @@ def printMenu():
     print("0- Salir")
     print("*******************************************")
 
-
+def printBestTaxis(qeue, N):
+    i=0
+    while i<N and not pq.isEmpty(qeue):
+        taxi=pq.delMin(qeue)
+        print("\n------ "+str(i+1)+" ------")
+        print("⚛︎ Taxi ID: {0}".format(taxi["id"]))
+        print("⚛︎ Puntaje: {0}".format(round(taxi["points"],2)))
+        i+=1
+    print("\n\nACLARACIÓN: Si aparecen menos taxis de los esperados es porque no hay {0} taxis en esa fecha".format(N))
 """
 Core
 """
 while True:
     printMenu()
-    inputs = input('Seleccione una opciÃ³n para continuar\n>')
+    inputs = input('Seleccione una opción para continuar\n>')
 
     if int(inputs[0]) == 1:
         print("\nInicializando....")
@@ -85,44 +94,60 @@ while True:
     elif int(inputs[0]) == 2:
         controller.loadFiles(cont)
         print('Viajes cargados: ' + str(controller.TaxisSize(cont)))
+    
     elif int(inputs[0]) == 3:
-        executiontime = timeit.timeit(optionThree, number=1)
-        print("\nTiempo de ejecuciÃ³n: " + str(executiontime))
+        pass
 
     elif int(inputs[0]) == 4:
-        msg = "EstaciÃ³n Base: BusStopCode-ServiceNo (Ej: 75009-10): "
-        initialStation = input(msg)
-        executiontime = timeit.timeit(optionFour, number=1)
-        print("\nTiempo de ejecuciÃ³n: " + str(executiontime))
+        pass
 
     elif int(inputs[0]) == 5:
         print("\nBuscando mejores taxis en una fecha: ")
-        N=int(input("Ingrese el número de mejores taxis que desee ver: "))
+        print('Menor Fecha: ' + str(controller.minKey(cont)))
+        print('Mayor Fecha: ' + str(controller.maxKey(cont)))
+        a=False
+        while a==False:
+            try:
+                N=int(input("Ingrese el número de mejores taxis que desee ver: "))
+                a=True
+            except:
+                pass
         Date = input("Fecha (YYYY-MM-DD): ")
-        best=controller.getBestNTaxisByDate(cont, Date, N):
+        bestN=controller.getBestNTaxisByDate(cont, Date, N)
+        if bestN==1:
+            print("El formato de fechas dado es inválido. Vuélvalo a intentar")
+        elif bestN==0 or pq.isEmpty(bestN):
+            print("No se encontraron taxis en esa fecha")
+        else:
+            print("\nLa lista de los mejores {0} taxis con sus respectivos puntos es: ".format(N))
+            printBestTaxis(bestN,N)
+            
 
     elif int(inputs[0]) == 6:
         print("\nBuscando mejores taxis en un rango de fechas: ")
         print('Menor Fecha: ' + str(controller.minKey(cont)))
         print('Mayor Fecha: ' + str(controller.maxKey(cont)))
-        M=int(input("Ingrese el número de mejores taxis que desee ver: "))
+        a=False
+        while a==False:
+            try:
+                M=int(input("Ingrese el número de mejores taxis que desee ver: "))
+                a=True
+            except:
+                pass
         inicialdate = input("Fecha inicial (YYYY-MM-DD): ")
         finaldate = input("Fecha final (YYYY-MM-DD): ")
-        best=controller.getBestMTaxisByRange(analyzer, inicialdate, finaldate, M)
-
+        bestM=controller.getBestMTaxisByRange(cont, inicialdate, finaldate, M)
+        if bestM==1:
+            print("\nEl formato de fechas dado es inválido. Vuélvalo a intentar")
+        elif bestM==0 or pq.isEmpty(bestM):
+            print("\nNo se encontraron taxis en ese rango de fechas.")
+        else:
+            print("\nLa lista de los mejores {0} taxis con sus respectivos puntos es: ".format(M))
+            printBestTaxis(bestM,M)
     elif int(inputs[0]) == 7:
-        rango=input("Ingrese rango de edad:")
-        executiontime = timeit.timeit(optionSeven, number=1)
-        print("\nTiempo de ejecuciÃ³n: " + str(executiontime))
-        
+        pass
     elif int(inputs[0]) == 8:
-        latu = float(input("Ingrese la latitud de su ubicacion: "))
-        lonu = float(input("Ingrese la longitud de su ubicacion:"))
-        latd = float(input("Ingrese la latitud del sitio que desea visitar: "))
-        lond = float(input("Ingrese la longitud del sitio que desea visitar: "))
-        coordsu = (latu,lonu)
-        coordsd = (latd,lond)
-        executiontime = timeit.timeit(optionEight, number=1)
+        pass
 
     else:
         sys.exit(0)

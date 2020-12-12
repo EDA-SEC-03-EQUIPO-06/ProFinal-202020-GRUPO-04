@@ -53,15 +53,15 @@ def newAnalyzer():
                 "CompanyTaxis":None,
                 "DateIndex": None,
                 "graph": None}
-    analyzer["CompanyServices"] = m.newMap(comparefunction=)
-    analyzer["CompanyTaxis"] = m.newMap(comparefunction=)
+    analyzer["CompanyServices"] = m.newMap(comparefunction=compareIds)
+    analyzer["CompanyTaxis"] = m.newMap(comparefunction=compareIds)
 
     analyzer['Services'] = lt.newList('ARRAY_LIST', compareIds)
     analyzer["DateIndex"] = om.newMap(omaptype= "RBT",
                                       comparefunction=compareDates)
     analyzer["graph"] = gr.newGraph(datastructure= "ADJ_LIST",
                                     directed = True,
-                                    comparefunction=)
+                                    comparefunction=compareIds)
     return analyzer
     
 # ==============================
@@ -77,7 +77,7 @@ def addLine(analyzer, line):
 #----------------------------
 # Requerimiento 2
 #----------------------------
-def updateDateIndex(map, line, pointdic):
+def updateDateIndex(map, line):
     """
     Se toma la fecha del accidente y se busca si ya existe en el arbol
     dicha fecha.  Si es asi, se adiciona al árbol.
@@ -85,7 +85,7 @@ def updateDateIndex(map, line, pointdic):
     se crea.
     """
     occurreddate = line['trip_start_timestamp']
-    linedate = datetime.datetime.strptime(occurreddate, '%Y-%m-%d %H:%M:%S')
+    linedate = datetime.datetime.strptime(occurreddate, '%Y-%m-%dT%H:%M:%S.%f')
     entry = om.get(map, linedate.date())
     if entry is None:
         datentry = {}
@@ -125,24 +125,40 @@ def getBestNTaxisByDate(analyzer, Date, N):
     """
     qeue=pq.newMinPQ(cmpfunction= compareDegreeMax)
     Date = om.get(analyzer['DateIndex'], Date)
-    i=0
-    lista=[]
     try:
         if Date['key'] is not None:
             entry = me.getValue(Date)
             for taxi in entry:
                 points=entry[taxi]["points"]
                 pq.insert(qeue,{"id":taxi,"points":points})
-            while i<N:
-                lista.append(pq.delMin(qeue))
-                i+=1
-            return lista
+            return qeue
     except:
         return 0
 
-def getBestMTaxisByRange(analyzer,i nitDate, finalDate, M):
-    Mapas=om.values(analyzer['DateIndex'],initDate,finalDate)
-    print(Mapas)
+def getBestMTaxisByRange(analyzer,initDate, finalDate, M):
+    dateslist=om.keys(analyzer['DateIndex'],initDate,finalDate)
+    if lt.isEmpty(dateslist):
+        return 0
+    iterator=it.newIterator(dateslist)
+    pointdic={}
+    while it.hasNext(iterator):
+        date=it.next(iterator)
+        dictaxis=me.getValue(om.get(analyzer["DateIndex"],date))
+        for tid in dictaxis:
+            if tid not in pointdic:
+                pointdic[tid]={"miles":0,"total":0,
+                        "services":0,"points":0}
+            pointdic[tid]["miles"]+=dictaxis[tid]["miles"]
+            pointdic[tid]["total"]+=dictaxis[tid]["total"]
+            pointdic[tid]["services"]+=dictaxis[tid]["services"]
+            if pointdic[tid]["total"]!=0:
+                pointdic[tid]["points"]=pointdic[tid]["miles"]*pointdic[tid]["services"]/pointdic[tid]["total"]
+    qeue=pq.newMinPQ(cmpfunction= compareDegreeMax)
+    for taxi in pointdic:
+        points=pointdic[taxi]["points"]
+        pq.insert(qeue,{"id":taxi,"points":points})
+    return qeue
+
 
 # ==============================
 # Funciones Helper
@@ -158,10 +174,14 @@ def calculatePoints(datentry,line):
     if tid not in dic:
         dic[tid]={"miles":0,"total":0,
                                     "services":0,"points":0}
-    dic[tid]["miles"]+=line["trip_miles"]
-    dic[tid]["total"]+=line["trip_total"]
-    dic[tid]["services"]+=1
-    dic[tid]["points"]=dic[tid]["miles"]*dic[tid]["services"]/dic[tid]["total"]
+    try:
+        dic[tid]["miles"]+=float(line["trip_miles"])
+        dic[tid]["total"]+=float(line["trip_total"])
+        dic[tid]["services"]+=1
+    except:
+        pass
+    if dic[tid]["total"]!=0:
+        dic[tid]["points"]=dic[tid]["miles"]*dic[tid]["services"]/dic[tid]["total"]
     return None
 
 
