@@ -51,6 +51,17 @@ recursionLimit = 20000
 #  Menu principal
 # ___________________________________________________
 
+def optionThree():
+    """
+    Requerimento 1
+    """
+    r= (controller.universal(cont, n))
+    print("\nLos resultados encrontados son: \n")
+    print(r[0])
+    print("\n El top compañias por numero de taxis es: \n")
+    print(r[1][0])
+    print("\n El top compañias por numero de servicios es: \n")
+    print(r[1][1])
 """
 Menu principal
 """
@@ -93,7 +104,9 @@ while True:
         controller.loadFiles(cont)
     
     elif int(inputs[0]) == 3:
-        pass
+        n = int(input("Escriba el numero de compañias incluidas en el Ranking: "))
+        executiontime = timeit.timeit(optionThree, number=1)
+        print("\nTiempo de ejecución: " + str(executiontime))
 
     elif int(inputs[0]) == 4:
         pass

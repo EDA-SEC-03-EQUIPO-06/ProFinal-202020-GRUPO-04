@@ -62,8 +62,6 @@ def loadFiles(analyzer):
     return analyzer
     
 def loadFile(analyzer, infofile):
-    """
-    """
     infofile = cf.data_dir + infofile
     input_file = csv.DictReader(open(infofile, encoding= "utf-8"),
                                 delimiter = ",")
@@ -74,6 +72,13 @@ def loadFile(analyzer, infofile):
 #  Funciones para consultas
 # ___________________________________________________
 
+#----------------------------
+# Requerimiento 1 
+#----------------------------
+def universal(analyzer, n):
+    Total = model.Total(analyzer)
+    Pq = model.PQmaker(analyzer)
+    return( Total, model.getTopN(Pq, n))
 #----------------------------
 # Requerimiento 2
 #----------------------------
@@ -106,7 +111,7 @@ def getBestMTaxisByRange(analyzer, initDate, finalDate, M):
     except:
         return 1
 #----------------------------
-# Requerimiento 2
+# Requerimiento 3
 #----------------------------
 def getBestSchedule(analyzer, pickUp, dropOff, InitialTime, EndTime):
     InitialTime = "1111-11-11T" + InitialTime +":00.000"
@@ -114,3 +119,5 @@ def getBestSchedule(analyzer, pickUp, dropOff, InitialTime, EndTime):
     EndTime = "1111-11-11T" + EndTime +":00.000"
     EndTime = model.getTimeTaxiTrip(EndTime)
     return model.getBestSchedule(analyzer["graph"],pickUp,dropOff,InitialTime,EndTime)
+    
+
