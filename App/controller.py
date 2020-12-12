@@ -25,7 +25,9 @@
  """
 
 import config as cf
+import os
 from App import model
+import datetime
 import csv
 
 """
@@ -70,3 +72,42 @@ def loadFile(analyzer, infofile):
 # ___________________________________________________
 #  Funciones para consultas
 # ___________________________________________________
+
+
+
+#----------------------------
+# Requerimiento 2
+#----------------------------
+def TaxisSize(analyzer):
+    """
+    Numero de crimenes leidos
+    """
+    return model.TaxisSize(analyzer)
+
+def minKey(analyzer):
+    """
+    La menor llave del arbol
+    """
+    return model.minKey(analyzer)
+
+
+def maxKey(analyzer):
+    """
+    La mayor llave del arbol
+    """
+    return model.maxKey(analyzer)
+
+def getBestNTaxisByDate(analyzer, Date, N):
+    try:
+        Date = datetime.datetime.strptime(Date, '%Y-%m-%d')
+        return model.getBestNTaxisByDate(analyzer, Date.date(),N)
+    except:
+        return 1
+
+def getBestMTaxisByRange(analyzer, initDate, finalDate, M):
+    try:
+        initDate = datetime.datetime.strptime(initDate, '%Y-%m-%d')
+        finalDate = datetime.datetime.strptime(finalDate, '%Y-%m-%d')
+        return model.getBestMTaxisByRange(analyzer, initDate.date(), finalDate.date(), M)
+    except:
+        return 1
