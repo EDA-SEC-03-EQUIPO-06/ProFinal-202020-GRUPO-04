@@ -68,7 +68,7 @@ while True:
         EndTime = input("Ingrese el rango superior de su horario disponible: ")
         info = controller.getBestSchedule(cont,pickUp,dropOff,InitialTime,EndTime)
         if info[1] is not None:
-            print("\n El mejor horario para tomar el viaje es {}, el cual te tomará aproximadamente {} segundos".format(info[0],int(info[2])))
+            print("\nEl mejor horario para tomar el viaje es {}, el cual te tomará aproximadamente {} minutos".format(info[0],int(info[2])//60))
             print("La mejor ruta para tomar es {}\n".format("-".join(info[1])))
         else:
             print("Lo sentimos, no hay una ruta disponible en ninguno de los horarios seleccionados")

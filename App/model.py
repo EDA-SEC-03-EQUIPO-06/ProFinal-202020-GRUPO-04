@@ -61,8 +61,6 @@ def newAnalyzer():
     analyzer["graph"] = gr.newGraph(datastructure= "ADJ_LIST",
                                     directed = True,
                                     comparefunction= compareStations)
-    #analyzer["AreaInfo"] = m.newMap(maptype= "CHAINING",
-    #                                comparefunction= )
     return analyzer
     
 # ==============================
@@ -83,9 +81,7 @@ def updateGraph(analyzer, file):
         addCA(analyzer, str(int(float(dropOffCA))))
     if pickUpCA != dropOffCA and TripDuration != "" and pickUpCA != "" and dropOffCA != "" and int(float(TripDuration))>0:    
         addConnection(analyzer,str(int(float(pickUpCA))),str(int(float(dropOffCA))),StartTime,TripDuration)
-    
-    
-    
+        
 def addCA(analyzer, CommunityArea):
     if not gr.containsVertex(analyzer["graph"], CommunityArea):
         gr.insertVertex(analyzer["graph"], CommunityArea)
