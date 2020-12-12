@@ -49,7 +49,7 @@ de creacion y consulta sobre las estructuras de datos.
 def newAnalyzer():
     analyzer = {"Company": None,
                 "Total_Taxis": [],
-                "Total_Companys" 
+                "Total_Companys": None, 
                 "DatesTree": None,
                 "graph": None}
     
@@ -76,7 +76,7 @@ def addCompanyService(analyzer, tripfile):
     taxiID = tripfile["taxi_id"]
     lsttaxis = analyzer["Total_Taxis"]
     
-    if Compañia == None: 
+    if Compañia == None or Compañia == "" or Compañia == " ": 
         Compañia = "Independent Owner"
     
     existcompany = m.contains(mapa, Compañia)
@@ -93,9 +93,9 @@ def addCompanyService(analyzer, tripfile):
         analyzer["Total_Companys"] += 1
         DictCompany = newCompany()
         m.put(mapa, Compañia, DictCompany)
-        m.get(mapa, Compañia)['value'["Services"] += 1
+        m.get(mapa, Compañia)['value']["Services"] += 1
 
-    if taxiID not in lsttaxis:
+    if taxiID not in lsttaxis: 
             lsttaxis.append(taxiID)
 
         
@@ -106,7 +106,7 @@ def addCompanyService(analyzer, tripfile):
 # Funciones de consulta
 # ==============================
 def Total(analyzer):
-    print(analyzer)
+
     return {"Total_Taxis: ": (len(analyzer["Total_Taxis"])), "Total_Companys: ": analyzer["Total_Companys"] }
 
 def PQmaker(analyzer): 
@@ -114,7 +114,7 @@ def PQmaker(analyzer):
     TopServices =  pq.newMinPQ(cmpfunction= comparefunction)
     TopTaxis = pq.newMinPQ(cmpfunction= comparefunction)
     lstcompany = m.keySet(analyzer["Company"])
-    iterator = it.newIterator(lstcompany)
+    iterator = it.newIterator(lstcompany)}
 
     while it.hasNext(iterator):
         element = it.next(iterator)

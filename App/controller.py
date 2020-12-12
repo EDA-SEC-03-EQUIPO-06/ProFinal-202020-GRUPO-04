@@ -75,6 +75,7 @@ def loadFile(analyzer, infofile):
 # ___________________________________________________
 #  Funciones para consultas
 # ___________________________________________________
+
 def universal(analyzer, n):
     Total = model.Total(analyzer)
     Pq = model.PQmaker(analyzer)
