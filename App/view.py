@@ -64,8 +64,7 @@ def printMenu():
     print("4- Requerimiento A")
     print("5- Identificar N mejores Taxis en una fecha")
     print("6- Identificar N mejores Taxis en un rango de fechas")
-    print("7- Requerimiento C")
-    print("8- Requerimiento C")
+    print("7- Obtener el mejor horario para emprender una travesia por Chicago")
     print("0- Salir")
     print("*******************************************")
 
@@ -92,7 +91,6 @@ while True:
 
     elif int(inputs[0]) == 2:
         controller.loadFiles(cont)
-        print('Viajes cargados: ' + str(controller.TaxisSize(cont)))
     
     elif int(inputs[0]) == 3:
         pass
@@ -144,10 +142,16 @@ while True:
             print("\nLa lista de los mejores {0} taxis con sus respectivos puntos es: ".format(M))
             printBestTaxis(bestM,M)
     elif int(inputs[0]) == 7:
-        pass
-    elif int(inputs[0]) == 8:
-        pass
-
+        pickUp = input("Ingrese la Community Area de la que quiere salir: ")
+        dropOff = input("Ingrese la Community Area a la que quiere llegar: ")
+        InitialTime = input("Ingrese el rango inferior de su horario disponible: ")
+        EndTime = input("Ingrese el rango superior de su horario disponible: ")
+        info = controller.getBestSchedule(cont,pickUp,dropOff,InitialTime,EndTime)
+        if info[1] is not None:
+            print("\nEl mejor horario para tomar el viaje es {}, el cual te tomará aproximadamente {} minutos".format(info[0],int(info[2])//60))
+            print("La mejor ruta para tomar es {}\n".format("-".join(info[1])))
+        else:
+            print("Lo sentimos, no hay una ruta disponible en ninguno de los horarios seleccionados")
     else:
         sys.exit(0)
 sys.exit(0)

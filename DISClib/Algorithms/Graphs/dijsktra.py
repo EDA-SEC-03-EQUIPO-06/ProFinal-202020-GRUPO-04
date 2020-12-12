@@ -37,7 +37,7 @@ import math
 assert config
 
 
-def Dijkstra(graph, source):
+def Dijkstra(graph, source,stamp):
     """
     Implementa el algoritmo de Dijkstra
     Args:
@@ -58,7 +58,8 @@ def Dijkstra(graph, source):
                 edgesiter = it.newIterator(edges)
                 while (it.hasNext(edgesiter)):
                     edge = it.next(edgesiter)
-                    relax(search, edge)
+                    if edge["stamp"] == stamp:
+                        relax(search, edge)
         return search
     except Exception as exp:
         error.reraise(exp, 'dks:dijkstra')

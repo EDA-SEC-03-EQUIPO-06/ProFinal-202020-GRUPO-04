@@ -201,7 +201,7 @@ def indegree(graph, vertex):
         return alt.indegree(graph, vertex)
 
 
-def getEdge(graph, vertexa, vertexb):
+def getEdge(graph, vertexa, vertexb, stamp):
     """
     Retorna el arco asociado a los vertices vertexa ---- vertexb
 
@@ -216,10 +216,10 @@ def getEdge(graph, vertexa, vertexb):
         Exception
     """
     if (graph['type'] == "ADJ_LIST"):
-        return alt.getEdge(graph, vertexa, vertexb)
+        return alt.getEdge(graph, vertexa, vertexb, stamp)
 
 
-def addEdge(graph, vertexa, vertexb, weight):
+def addEdge(graph, vertexa, vertexb, weight,stamp):
     """
     Agrega un arco entre los vertices vertexa ---- vertexb, con peso weight.
     Si el grafo es no dirigido se adiciona dos veces el mismo arco,
@@ -238,7 +238,7 @@ def addEdge(graph, vertexa, vertexb, weight):
         Exception
     """
     if (graph['type'] == "ADJ_LIST"):
-        return alt.addEdge(graph, vertexa, vertexb, weight)
+        return alt.addEdge(graph, vertexa, vertexb, weight,stamp)
 
 
 def containsVertex(graph, vertex):

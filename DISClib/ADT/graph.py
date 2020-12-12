@@ -191,7 +191,7 @@ def indegree(graph, vertex):
     return gr.indegree(graph, vertex)
 
 
-def getEdge(graph, vertexa, vertexb):
+def getEdge(graph, vertexa, vertexb, stamp):
     """
     Retorna el arco asociado a los vertices vertexa ---- vertexb
 
@@ -205,10 +205,10 @@ def getEdge(graph, vertexa, vertexb):
     Raises:
         Exception
     """
-    return gr.getEdge(graph, vertexa, vertexb)
+    return gr.getEdge(graph, vertexa, vertexb, stamp)
 
 
-def addEdge(graph, vertexa, vertexb, weight=0):
+def addEdge(graph, vertexa, vertexb, weight=0,stamp= None):
     """
     Agrega un arco entre los vertices vertexa ---- vertexb, con peso weight.
     Si el grafo es no dirigido se adiciona dos veces el mismo arco,
@@ -226,7 +226,7 @@ def addEdge(graph, vertexa, vertexb, weight=0):
     Raises:
         Exception
     """
-    return gr.addEdge(graph, vertexa, vertexb, weight)
+    return gr.addEdge(graph, vertexa, vertexb, weight,stamp)
 
 
 def containsVertex(graph, vertex):

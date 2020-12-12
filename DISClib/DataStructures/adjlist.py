@@ -261,7 +261,7 @@ def outdegree(graph, vertex):
         error.reraise(exp, 'ajlist:outdegree')
 
 
-def getEdge(graph, vertexa, vertexb):
+def getEdge(graph, vertexa, vertexb, stamp):
     """
     Retorna el arco asociado a los vertices vertexa ---- vertexb
 
@@ -283,7 +283,7 @@ def getEdge(graph, vertexa, vertexb):
             edge = it.next(itvertex)
             if (graph['directed']):
                 if (e.either(edge) == vertexa and
-                   (e.other(edge, e.either(edge)) == vertexb)):
+                   (e.other(edge, e.either(edge)) == vertexb)) and (edge["stamp"] == stamp):
                     return edge
             elif(e.either(edge) == vertexa or
                  (e.other(edge, e.either(edge)) == vertexa)):
@@ -314,7 +314,7 @@ def containsVertex(graph, vertex):
         error.reraise(exp, 'ajlist:containsvertex')
 
 
-def addEdge(graph, vertexa, vertexb, weight=0):
+def addEdge(graph, vertexa, vertexb, weight=0,stamp = None):
     """
     Agrega un arco entre los vertices vertexa ---- vertexb, con peso weight.
     Si el grafo es no dirigido se adiciona dos veces el mismo arco,
@@ -334,7 +334,7 @@ def addEdge(graph, vertexa, vertexb, weight=0):
     """
     try:
         # Se crea el arco
-        edge = e.newEdge(vertexa, vertexb, weight)
+        edge = e.newEdge(vertexa, vertexb, weight, stamp)
         # Se obtienen las listas de adyacencias de cada vertice
         # Se anexa a cada lista el arco correspondiente
         entrya = map.get(graph['vertices'], vertexa)

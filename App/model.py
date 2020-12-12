@@ -29,6 +29,7 @@ from DISClib.ADT import map as m
 from DISClib.ADT import orderedmap as om
 from DISClib.ADT import list as lt
 from DISClib.ADT import minpq as pq
+from DISClib.DataStructures import edge as e
 from DISClib.DataStructures import listiterator as it
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Graphs import scc
@@ -36,6 +37,7 @@ from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.Algorithms.Sorting import quicksort as qs
 from DISClib.Utils import error as error
 from DISClib.ADT import graph as gr
+from DISClib.ADT import stack as st
 import datetime
 assert config
 
@@ -60,7 +62,7 @@ def newAnalyzer():
                                       comparefunction=compareDates)
     analyzer["graph"] = gr.newGraph(datastructure= "ADJ_LIST",
                                     directed = True,
-                                    comparefunction=compareIds)
+                                    comparefunction= compareStations)
     return analyzer
     
 # ==============================
@@ -69,6 +71,7 @@ def newAnalyzer():
 
 def addLine(analyzer, line):
     updateDateIndex(analyzer['DateIndex'], line)
+    updateGraph(analyzer,line)
     return analyzer       
 
 #----------------------------
@@ -92,6 +95,35 @@ def updateDateIndex(map, line):
     calculatePoints(datentry,line)
     #addDateIndex(datentry, line, pointdic)
     return map
+#----------------------------
+# Requerimiento 3
+#----------------------------    
+
+def updateGraph(analyzer, file):
+    pickUpCA = file["pickup_community_area"]
+    dropOffCA = file["dropoff_community_area"]
+    TripDuration = file["trip_seconds"]
+    StartTime = getTimeTaxiTrip(file["trip_start_timestamp"])
+    if pickUpCA != "":
+        addCA(analyzer, str(int(float(pickUpCA))))
+    if dropOffCA != "":
+        addCA(analyzer, str(int(float(dropOffCA))))
+    if pickUpCA != dropOffCA and TripDuration != "" and pickUpCA != "" and dropOffCA != "" and int(float(TripDuration))>0:    
+        addConnection(analyzer,str(int(float(pickUpCA))),str(int(float(dropOffCA))),StartTime,TripDuration)
+        
+def addCA(analyzer, CommunityArea):
+    if not gr.containsVertex(analyzer["graph"], CommunityArea):
+        gr.insertVertex(analyzer["graph"], CommunityArea)
+    return analyzer
+    
+    
+def addConnection(analyzer, CA1, CA2, startTime, TripDuration):
+    edge = gr.getEdge(analyzer["graph"], CA1, CA2, startTime)
+    if edge is None:
+        gr.addEdge(analyzer["graph"], CA1,CA2,TripDuration, startTime)
+    else:
+        e.updateAverageWeight(analyzer["graph"],edge,TripDuration)
+    return analyzer
 
 # ==============================
 # Funciones de consulta
@@ -99,11 +131,6 @@ def updateDateIndex(map, line):
 #----------------------------
 # Requerimiento 2
 #----------------------------
-def TaxisSize(analyzer):
-    """
-    Número de libros en el catago
-    """
-    return lt.size(analyzer['Services'])
     
 def minKey(analyzer):
     """Numero de autores leido
@@ -155,19 +182,49 @@ def getBestMTaxisByRange(analyzer,initDate, finalDate, M):
         points=pointdic[taxi]["points"]
         pq.insert(qeue,{"id":taxi,"points":points})
     return qeue
+#----------------------------
+# Requerimiento 3
+#----------------------------
 
-
+def getBestSchedule(graph, pickUp, dropOff, InitialTime, EndTime):
+    bestSchedule = InitialTime
+    currentStamp = InitialTime
+    first = getTime(graph,pickUp,dropOff,currentStamp)
+    bestTime = first[0]
+    search = first[1]
+    while currentStamp != EndTime:
+        currentStamp = add15(currentStamp)
+        time = getTime(graph, pickUp, dropOff, currentStamp)
+        if time[0] < bestTime:
+            bestSchedule = currentStamp
+            bestTime = time[0]
+            search = time[1]
+    path = []
+    pathTo = djk.pathTo(search, dropOff)
+    if pathTo is None:
+        path = None
+    else:
+        while not st.isEmpty(pathTo):
+            edge = st.pop(pathTo)
+            Com = edge["vertexA"]
+            path.append(Com)
+            if st.size(pathTo) == 0:
+                Com2 = edge["vertexB"]
+                path.append(Com2)
+    return bestSchedule,path,bestTime
+    
+def getTime(graph, pickUp, dropOff, currentStamp):
+    ST = djk.Dijkstra(graph, pickUp, currentStamp)
+    time = djk.distTo(ST, dropOff)
+    return time,ST
+    
 # ==============================
 # Funciones Helper
 # ==============================
 
-#----------------------------
-# Requerimiento 2
-#----------------------------
 def calculatePoints(datentry,line):
     tid=line["taxi_id"]
     dic=datentry
-    #dic=datentry["PointDic"]
     if tid not in dic:
         dic[tid]={"miles":0,"total":0,
                                     "services":0,"points":0}
@@ -181,25 +238,36 @@ def calculatePoints(datentry,line):
         dic[tid]["points"]=dic[tid]["miles"]*dic[tid]["services"]/dic[tid]["total"]
     return None
 
-
+def getTimeTaxiTrip(timestamp):
+    taxitripdatetime = datetime.datetime.strptime(timestamp, '%Y-%m-%dT%H:%M:%S.%f')
+    return taxitripdatetime.time()
+    
+def add15(timestamp):
+    timestamp = timestamp.strftime("%Y-%m-%dT%H:%M:%S")
+    timestamp =datetime.datetime.strptime(timestamp, '%Y-%m-%dT%H:%M:%S')
+    fifteen = timestamp + datetime.timedelta(minutes=15)
+    return fifteen.time()
 # ==============================
 # Funciones de Comparacion
 # ==============================
-
-#----------------------------
-# Requerimiento 2
-#----------------------------
 def compareIds(id1, id2):
-    """
-    Compara dos crimenes
-    """
+    
     if (id1 == id2):
         return 0
     elif id1 > id2:
         return 1
     else:
         return -1
-
+        
+def compareStations(stop, keyvaluestop):
+    
+    stopcode = keyvaluestop['key']
+    if (stop == stopcode):
+        return 0
+    elif (stop > stopcode):
+        return 1
+    else:
+        return -1
 def compareDates(date1, date2):
     if (date1 == date2):
         return 0
@@ -216,38 +284,4 @@ def compareDegreeMax(value1,value2):
     elif value1 > value2:
         return -1
     else:
-        return 1
-
-
-
-
-
-
-"""
-def newDataEntry(line):
-  
-    Crea una entrada en el indice por fechas, es decir en el arbol
-    binario.
-    
-    entry = {"PQ":None, "listTaxis":None, "PointDic"={}}
-    entry['PQ'] = pq.newMinPQ(cmpfunction= compareDegreeMax)
-    entry["listTaxis"]=lt.newList('ARRAY_LIST', compareIds)
-    return entry
-
-def addDateIndex(datentry, line, pointdic):
-    pq=datentry["PQ"]
-    listTaxis=datentry["listTaxis"]
-    tid=line["taxi_id"]
-    points=pointdic["tid"]["points"]
-    if not lt.isPresent(listTaxis,tid):
-        lt.addLast(listTaxis,tid)
-        pq.insert(pq,{tid:points})
-    return datentry
-
-def addtoTree(analyzer)
-    i=it.newIterator(analyzer["Services"])
-    while it.hasNext(i):
-        line=it.next(i)
-        updateDateIndex(analyzer['DateIndex'], line , analyzer["PointDic"])
-    return None
-"""
+        return 1 

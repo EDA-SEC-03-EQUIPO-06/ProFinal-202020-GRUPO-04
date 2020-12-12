@@ -29,6 +29,7 @@ import os
 from App import model
 import datetime
 import csv
+import os
 
 """
 El controlador se encarga de mediar entre la vista y el modelo.
@@ -73,16 +74,9 @@ def loadFile(analyzer, infofile):
 #  Funciones para consultas
 # ___________________________________________________
 
-
-
 #----------------------------
 # Requerimiento 2
 #----------------------------
-def TaxisSize(analyzer):
-    """
-    Numero de crimenes leidos
-    """
-    return model.TaxisSize(analyzer)
 
 def minKey(analyzer):
     """
@@ -111,3 +105,12 @@ def getBestMTaxisByRange(analyzer, initDate, finalDate, M):
         return model.getBestMTaxisByRange(analyzer, initDate.date(), finalDate.date(), M)
     except:
         return 1
+#----------------------------
+# Requerimiento 2
+#----------------------------
+def getBestSchedule(analyzer, pickUp, dropOff, InitialTime, EndTime):
+    InitialTime = "1111-11-11T" + InitialTime +":00.000"
+    InitialTime = model.getTimeTaxiTrip(InitialTime)
+    EndTime = "1111-11-11T" + EndTime +":00.000"
+    EndTime = model.getTimeTaxiTrip(EndTime)
+    return model.getBestSchedule(analyzer["graph"],pickUp,dropOff,InitialTime,EndTime)
