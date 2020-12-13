@@ -62,11 +62,13 @@ def loadFiles(analyzer):
     return analyzer
     
 def loadFile(analyzer, infofile):
+ 
     infofile = cf.data_dir + infofile
     input_file = csv.DictReader(open(infofile, encoding= "utf-8"),
                                 delimiter = ",")
     for line in input_file:
         model.addLine(analyzer, line)
+
     return analyzer
 # ___________________________________________________
 #  Funciones para consultas

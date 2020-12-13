@@ -170,7 +170,7 @@ def addConnection(analyzer, CA1, CA2, startTime, TripDuration):
 
 def Total(analyzer):
 
-    return {"Total_Taxis: ": (len(analyzer["Total_Taxis"])), "Total_Companys: ": analyzer["Total_Companys"] }
+    return {"Total_Taxis": (len(analyzer["Total_Taxis"])), "Total_Companys": analyzer["Total_Companys"] }
 
 def PQmaker(analyzer): 
     
@@ -185,7 +185,6 @@ def PQmaker(analyzer):
         
         numtaxis = len(consulta["Taxis"])
         numservices = (consulta["Services"])
-        print(numtaxis, numservices, element)
 
         taxisentry = {"key": numtaxis, "company": element}
         servicesentry = {"key": numservices, "company": element}

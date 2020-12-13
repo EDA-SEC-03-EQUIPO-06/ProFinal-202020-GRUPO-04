@@ -56,15 +56,46 @@ def optionThree():
     Requerimento 1
     """
     r= (controller.universal(cont, n))
-    print("\nLos resultados encrontados son: \n")
-    print(r[0])
-    print("\n El top compañias por numero de taxis es: \n")
-    print(r[1][0])
-    print("\n El top compañias por numero de servicios es: \n")
-    print(r[1][1])
+    print("\n ******************* Resultados encrontados *******************\n")
+    print("  ► El total de taxis es: "+str(r[0]["Total_Taxis"]))
+    print("  ► El total de compañias es: "+str(r[0]["Total_Companys"]))
+    if n<= r[0]["Total_Companys"]:
+        print("\n  ************ TOP COMPAÑIAS ************")
+        print("    El top "+ str(n)+ " compañias por numero de taxis es: \n")
+        for i in (r[1][0]): 
+            print("     " +str(i)+" " + str(r[1][0][i]["company"])+ " con " + str(r[1][0][i]["key"])+ " taxis")
+        print("\n    El top "+str(n)+ " compañias por numero de servicios es: \n")
+        for i in (r[1][1]): 
+            print("     " +str(i)+" "+str(r[1][1][i]["company"])+ " con " + str(r[1][1][i]["key"])+ " servicios")
+    else: 
+        print("\nEl numero seleccionado exece el numero de compañias")
+
+
+def optionFour():
+    r = (controller.universal(cont, n))
+
+    file = open("out.txt", "w", encoding= "UTF-8")
+    file.write("\n ******************* Resultados encrontados *******************\n")
+    file.write(("  ► El total de taxis es: "+str(r[0]["Total_Taxis"]) +"\n"))
+    file.write("  ► El total de compañias es: "+str(r[0]["Total_Companys"])+"\n") 
+    if n<= r[0]["Total_Companys"]:
+        file.write("\n  ************ TOP COMPAÑIAS ************\n")
+        file.write("    El top "+ str(n)+ " compañias por numero de taxis es: \n")
+        for i in (r[1][0]): 
+            file.write("     " +str(i)+" " + str(r[1][0][i]["company"])+ " con " + str(r[1][0][i]["key"])+ " taxis \n")
+        file.write("\n    El top "+str(n)+ " compañias por numero de servicios es: \n")
+        for i in (r[1][1]): 
+            file.write("     " +str(i)+" "+str(r[1][1][i]["company"])+ " con " + str(r[1][1][i]["key"])+ " servicios \n")
+    else: 
+        print("\n El numero seleccionado exece el numero de compañias")
+        file.write("\n El numero seleccionado exece el numero de compañias")
+    file.close()
+    print("\n Por favor abre el archivo .txt llamado out :)")
+
 """
 Menu principal
 """
+
 def printMenu():
     print("\n")
     print("*******************************************")
@@ -72,7 +103,7 @@ def printMenu():
     print("1- Inicializar Analizador")
     print("2- Cargar información de Taxis")
     print("3- Requerimiento A")
-    print("4- Requerimiento A")
+    print("4- Requerimiento A con txt")
     print("5- Identificar N mejores Taxis en una fecha")
     print("6- Identificar N mejores Taxis en un rango de fechas")
     print("7- Obtener el mejor horario para emprender una travesia por Chicago")
@@ -104,12 +135,26 @@ while True:
         controller.loadFiles(cont)
     
     elif int(inputs[0]) == 3:
-        n = int(input("Escriba el numero de compañias incluidas en el Ranking: "))
+        try:
+            n = int(input("Escriba el numero de compañias incluidas en el Ranking: "))
+            
+        except:
+            print("\n        El tipo de dato es invaldio")
+            n= 0
+
         executiontime = timeit.timeit(optionThree, number=1)
         print("\nTiempo de ejecución: " + str(executiontime))
 
     elif int(inputs[0]) == 4:
-        pass
+        try:
+            n = int(input("Escriba el numero de compañias incluidas en el Ranking: "))
+            
+        except:
+            print("\n        El tipo de dato es invaldio")
+            n= 0
+            
+        executiontime = timeit.timeit(optionFour, number=1)
+        print("\nTiempo de ejecución: " + str(executiontime))
 
     elif int(inputs[0]) == 5:
         print("\nBuscando mejores taxis en una fecha: ")

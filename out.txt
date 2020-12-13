@@ -1,0 +1,49 @@
+
+ ******************* Resultados encrontados *******************
+  ► El total de taxis es: 4075
+  ► El total de compañias es: 48
+
+  ************ TOP COMPAÑIAS ************
+    El top 20 compañias por numero de taxis es: 
+     1 Taxi Affiliation Services con 923 taxis 
+     2 Flash Cab con 610 taxis 
+     3 Chicago Carriage Cab Corp con 442 taxis 
+     4 Sun Taxi con 332 taxis 
+     5 City Service con 284 taxis 
+     6 Medallion Leasin con 281 taxis 
+     7 Star North Management LLC con 231 taxis 
+     8 Blue Ribbon Taxi Association Inc. con 187 taxis 
+     9 Choice Taxi Association con 152 taxis 
+     10 Taxicab Insurance Agency, LLC con 136 taxis 
+     11 Chicago Independents con 85 taxis 
+     12 Top Cab Affiliation con 75 taxis 
+     13 Nova Taxi Affiliation Llc con 65 taxis 
+     14 24 Seven Taxi con 43 taxis 
+     15 Patriot Taxi Dba Peace Taxi Associat con 43 taxis 
+     16 Suburban Dispatch LLC con 41 taxis 
+     17 Taxi Affiliation Service Yellow con 37 taxis 
+     18 Chicago Taxicab con 33 taxis 
+     19 KOAM Taxi Association con 31 taxis 
+     20 Chicago Medallion Management con 21 taxis 
+
+    El top 20 compañias por numero de servicios es: 
+     1 Taxi Affiliation Services con 13050 servicios 
+     2 Flash Cab con 9446 servicios 
+     3 Chicago Carriage Cab Corp con 5513 servicios 
+     4 Sun Taxi con 4060 servicios 
+     5 Medallion Leasin con 3675 servicios 
+     6 City Service con 3256 servicios 
+     7 Star North Management LLC con 3062 servicios 
+     8 Blue Ribbon Taxi Association Inc. con 2583 servicios 
+     9 Taxicab Insurance Agency, LLC con 1849 servicios 
+     10 Choice Taxi Association con 1597 servicios 
+     11 Nova Taxi Affiliation Llc con 950 servicios 
+     12 Chicago Independents con 871 servicios 
+     13 Top Cab Affiliation con 800 servicios 
+     14 Patriot Taxi Dba Peace Taxi Associat con 543 servicios 
+     15 Chicago Taxicab con 447 servicios 
+     16 24 Seven Taxi con 445 servicios 
+     17 Taxi Affiliation Service Yellow con 371 servicios 
+     18 KOAM Taxi Association con 351 servicios 
+     19 Chicago Medallion Management con 257 servicios 
+     20 5 Star Taxi con 107 servicios 
